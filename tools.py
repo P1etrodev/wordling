@@ -20,12 +20,18 @@ def filter_word(word, min_len=4, max_len=7):
 
 
 def get_words(min_len, max_len):
-    text_files = glob('**/*.txt', recursive=True)
-    text_files = ['./texts/cuento.txt'] + text_files
+    import sys
+    from os.path import join, dirname
+    if getattr(sys, 'frozen', False):
+        folder = join(dirname(sys.executable), 'texts')
+    else:
+        folder = join(dirname(__file__), 'texts')
+    
+    text_files = glob('**/*.txt', recursive=True, root_dir=folder)
     words = set()
 
     for f in text_files:
-        with open(f, 'r', encoding='utf-8') as file:
+        with open(join(folder, f), 'r', encoding='utf-8') as file:
             content = file.read().lower()
             words.update(filter(lambda x: filter_word(x, min_len, max_len), content.split()))
 
@@ -130,7 +136,7 @@ def play_wordle(game_name, min_len, max_len):
     console.clear()
     console.print(Markdown(f'# {game_name}'))
     console.print('Cargando...', style='bold purple')
-    words = get_words()
+    words = get_words(min_len, max_len)
     try:
         max_attempts = 6
 
@@ -186,5 +192,3 @@ def play_wordle(game_name, min_len, max_len):
                     return
     except KeyboardInterrupt:
         console.clear()
-
-play_wordle('Wordling')
