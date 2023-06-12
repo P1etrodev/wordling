@@ -1,0 +1,7 @@
+**/__pycache__
+build
+dist
+setup.py
+test.py
+build_installer.bat
+.vscode
